@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Glass Quiz App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* တောက်ပပြီး လှုပ်ရှားနေသော Colorful Liquid Background */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Colorful Liquid Glass Box (Glassmorphic Container) */
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 24px;
+            padding: 35px;
+            text-align: center;
+            max-width: 450px;
+            width: 85%;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25),
+                        inset 0 0 15px rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.5s ease;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .gif-container img {
+            width: 100%;
+            max-width: 260px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Liquid Glass Buttons */
+        .btn {
+            padding: 14px 22px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1),
+                        inset 0 0 10px rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* နှိပ်လိုက်ရင် အရည်ပျော်သွားသလို Liquid Effect ပြောင်းလဲမှုများ */
+        .btn-1:hover {
+            background: linear-gradient(135deg, rgba(0, 123, 255, 0.5), rgba(0, 229, 255, 0.5));
+            box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-2:hover {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.5), rgba(140, 235, 52, 0.5));
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.6), rgba(255, 87, 34, 0.6));
+            margin-top: 15px;
+        }
+        .btn-next:hover {
+            box-shadow: 0 8px 20px rgba(255, 87, 34, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #ff007f, #7f00ff);
+            margin-top: 15px;
+        }
+        .btn-save:hover {
+            box-shadow: 0 8px 20px rgba(255, 0, 127, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 10px;
+        }
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* ရလဒ်စာသားအလှဆင်ခြင်း */
+        .result-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            margin: 15px 0;
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quiz-page" class="container">
+        <h1>Friend Zone ထဲကနေငါတို့ ရုန်းထွက်ကြမလား ?</h1>
+        <div class="gif-container">
+            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2c2NHNmaHpmb3Ftb3VxejExMDlqcnNlNWF0bjBybjVuMjVrNHNseCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KztT2c4u8mYYUiMKdJ/giphy.gif">
+        </div>
+        <p>ငါတို့ သူငယ်ချင်းတွေအဖြစ် ဖြတ်သန်းခဲ့တဲ့ အချိန်တွေက တကယ်ကောင်းပါတယ်။ ဒါပေမဲ့ နောက်ပိုင်းမှာ ငါ နင့်အပေါ် သူငယ်ချင်းထက်ပိုတဲ့ ခံစားချက်မျိုး ခံစားလာရတယ်။ နင့်ကို ဒီထက်ပိုပြီး ဂရုစိုက်ချင်တယ်၊ ချစ်သူတွေအဖြစ် ရှေ့ဆက်ချင်တယ်။ နင့်ဘက်ကရော ဘယ်လိုသဘောရလဲ သိချင်တယ်"</p>
+        <div class="button-group">
+            <button class="btn btn-1" onclick="showContent('option1')">သူငယ်ချင်းလိုပဲဆက်နေရအောင်.</button>
+            <button class="btn btn-2" onclick="showContent('option2')">i said yes</button>
+        </div>
+    </div>
+
+    <div id="content-page" class="container" style="display: none;">
+        <h1 id="page-title">ရွေးချယ်မှု ရလဒ်</h1>
+        <div class="gif-container">
+            <img id="result-gif" src="" alt="Result GiF">
+        </div>
+        <audio id="audio-player" controls></audio>
+        <div class="button-group">
+            <button class="btn btn-next" onclick="goToFinalPage()">Relsult ➔</button>
+            <button class="btn btn-back" onclick="goBackToQuiz()">BACK</button>
+        </div>
+    </div>
+
+    <div id="final-page" class="container" style="display: none;">
+        <div id="capture-area" style="padding: 10px; border-radius: 16px;">
+            <h1>ရွေးချယ်မှုအဖြေ</h1>
+            <div class="gif-container">
+                <img id="final-gif" src="" alt="Final GiF" style="max-width: 200px;">
+            </div>
+            <div id="summary-text" class="result-box">
+                သင်သည် "အဖြေ - ၁" ကို ရွေးချယ်ခဲ့သည်။
+            </div>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 0;">Generated with Liquid Glass App</p>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn btn-save" onclick="saveAsPNG()">Save as PNG</button>
+            <button class="btn btn-back" onclick="goBackToContent()">BACK</button>
+        </div>
+    </div>
+
+    <script>
+        let userChoice = ""; // အသုံးပြုသူ ဘာရွေးလဲ မှတ်ထားရန် Variable
+
+        const contents = {
+            option1: {
+                title: "သူငယ်ချင်းလိုပဲဆက်နေရအောင်",
+                gif: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHRpMWltZTkxamw1NTdnMnY0bXIwYWY4bmpzcmRnZ2JpYjB3ZGV2diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/DHKDB8OdEVMkwTX3IQ/giphy.gif",
+                song: "https://www.image2url.com/r2/default/audio/1779620486327-232051ed-03e7-45d0-a62e-47e2d71b9bb6.mp3",
+                text: "သူငယ်ချင်းလိုပဲဆက်နေရအောင်."
+            },
+            option2: {
+                title: "i said yes",
+                gif: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2puczgzbmtpODUydWtlemY1bjJ1bjRiMHk2ajR3ZGU2OW4yZ3JkZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OvpDkvslMuDdw59me5/giphy.gif",
+                song: "https://www.image2url.com/r2/default/audio/1790751254415-0e255298-7854-4b9e-ba5c-859ae56edec6.mp3",
+                text: "i said yes"
+            }
+        };
+
+        function showContent(choice) {
+            userChoice = choice; // ရွေးချယ်မှုကို သိမ်းဆည်း
+            document.getElementById('quiz-page').style.display = 'none';
+            document.getElementById('content-page').style.display = 'block';
+            
+            const selected = contents[choice];
+            document.getElementById('page-title').innerText = selected.title;
+            document.getElementById('result-gif').src = selected.gif;
+            
+            const player = document.getElementById('audio-player');
+            player.src = selected.song;
+            player.play(); 
+        }
+
+        // သီချင်းစာမျက်နှာမှ နောက်ဆုံး ရလဒ်ချုပ်စာမျက်နှာသို့ သွားရန်
+        function goToFinalPage() {
+            document.getElementById('content-page').style.display = 'none';
+            document.getElementById('final-page').style.display = 'block';
+            
+            const selected = contents[userChoice];
+            document.getElementById('final-gif').src = selected.gif;
+            document.getElementById('summary-text').innerText = selected.text;
+        }
+
+        // PNG ပုံအဖြစ် ဖန်တီးပြီး ဒေါင်းလုဒ်ဆွဲပေးမည့် လုပ်ဆောင်ချက် (မီးမောင်းထိုးပြချက်)
+        function saveAsPNG() {
+            const target = document.getElementById('capture-area');
+            // Background ကောင်းကောင်းပါအောင် option ထည့်ပေးထားပါတယ်
+            html2canvas(target, {
+                backgroundColor: null, // Transparent ဖြင့် သိမ်းရန် သို့မဟုတ် အရောင်သတ်မှတ်ရန်
+                useCORS: true // အင်တာနက်က GiF တွေ ပုံထဲပါလာအောင် ခွင့်ပြုခြင်း
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'My_Result.png'; // ပုံရဲ့ နာမည်
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // Back ခလုတ်များအတွက် လုပ်ဆောင်ချက်
+        function goBackToQuiz() {
+            const player = document.getElementById('audio-player');
+            player.pause(); player.src = "";
+            document.getElementById('result-gif').src = "";
+            document.getElementById('content-page').style.display = 'none';
+            document.getElementById('quiz-page').style.display = 'block';
+        }
+
+        function goBackToContent() {
+            document.getElementById('final-page').style.display = 'none';
+            document.getElementById('content-page').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
